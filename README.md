@@ -25,153 +25,257 @@ This README includes both local testing and full Shopify cloud/tunnel/webhook us
   ```bash
   npm install -g @shopify/cli @shopify/app
 
-⚙️ Setup Instructions
-1. Clone the Repository
-bash
-Copy
-Edit
-git clone https://github.com/<your-github-username>/orders-remix-app.git
-cd orders-remix-app
-2. Install Dependencies
-bash
-Copy
-Edit
-npm install
-3. Initialize the Database
-bash
-Copy
-Edit
-npx prisma migrate dev --name init
-💡 Optional: Use npx prisma studio to visually inspect/edit the database.
 
-🚀 Running the App (with Cloud Tunnel)
-Shopify CLI uses a random port each time — check the terminal!
+## ⚙️ Setup Instructions
 
-1. Start Development Server
-bash
-Copy
-Edit
-npm run dev
-Watch for terminal output like:
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com//orders-remix-app.git](https://github.com//orders-remix-app.git)
+    cd orders-remix-app
+    ```
 
-ruby
-Copy
-Edit
-Local:   http://localhost:49201/
-Preview: https://your-store.myshopify.com/admin/apps/your-app
-2. Expose Your App with Cloudflare Tunnel
-Replace 49201 with the actual port from above:
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    ```
 
-bash
-Copy
-Edit
-npx cloudflared tunnel --url http://localhost:49201
-3. Update shopify.app.toml
-toml
-Copy
-Edit
-application_url = "https://your-tunnel-url/"
-[auth]
-redirect_urls = ["https://your-tunnel-url/api/auth"]
+3.  **Initialize the Database**
+    ```bash
+    npx prisma migrate dev --name init
+    ```
+    > 💡 **Optional:** Use `npx prisma studio` to visually inspect or edit the database.
 
-[webhooks]
-api_version = "2025-07"
+---
 
-  [[webhooks.subscriptions]]
-  topics = ["orders/create"]
-  uri    = "/webhooks/orders_create"
-📦 Receiving and Testing Webhooks
-A. Local Testing (Postman or curl)
-URL: http://localhost:<port>/webhooks/orders_create
+## 🚀 Running the App (with Cloud Tunnel)
 
-Method: POST
+Shopify CLI uses a random port each time—check your terminal output for the correct port number.
 
-Payload:
+1.  **Start the Development Server**
+    ```bash
+    npm run dev
+    ```
+    Watch for terminal output like this to get your port number:
+    ```
+    Local:   http://localhost:49201/
+    Preview: [https://your-store.myshopify.com/admin/apps/your-app](https://your-store.myshopify.com/admin/apps/your-app)
+    ```
 
-json
-Copy
-Edit
-{
-  "id": "9876543210",
-  "total_price": "123.45",
-  "created_at": "2024-07-01T14:30:00Z",
-  "customer": {
-    "first_name": "John",
-    "last_name": "Doe"
-  }
-}
-Expected response:
+2.  **Expose Your App with Cloudflare Tunnel**
+    Replace `49201` with the actual port from the step above.
+    ```bash
+    npx cloudflared tunnel --url http://localhost:49201
+    ```
 
-json
-Copy
-Edit
-{ "success": true }
-B. Live Shopify Order Testing (Tunnel Required)
-Install the app in your Shopify dev store.
+3.  **Update `shopify.app.toml`**
+    Replace `your-tunnel-url` with the public URL provided by Cloudflare.
+    ```toml
+    application_url = "https://your-tunnel-url/"
 
-Open it from Shopify Admin → Apps.
+    [auth]
+    redirect_urls = [
+      "https://your-tunnel-url/api/auth"
+    ]
 
-Create a test order.
+    [webhooks]
+    api_version = "2025-07"
 
-Shopify sends a POST to your public webhook URL.
+    [[webhooks.subscriptions]]
+    topics = ["orders/create"]
+    uri = "/webhooks/orders_create"
+    ```
 
-Visit /orders to view admin UI and confirm it's saved.
+---
 
-⚠️ Shopify cannot send webhooks to localhost — use a public tunnel!
+## 📦 Receiving and Testing Webhooks
 
-🧮 Viewing the Admin Table
-In Shopify Admin:
+### A. Local Testing (Postman or `curl`)
 
-Go to Apps → Orders Remix App
+* **URL:** `http://localhost:<PORT>/webhooks/orders_create`
+* **Method:** `POST`
+* **Payload:**
+    ```json
+    {
+      "id": "9876543210",
+      "total_price": "123.45",
+      "created_at": "2024-07-01T14:30:00Z",
+      "customer": {
+        "first_name": "John",
+        "last_name": "Doe"
+      }
+    }
+    ```
+* **Expected Response:**
+    ```json
+    { "success": true }
+    ```
 
-See the embedded UI with 5 orders per page
+### B. Live Shopify Order Testing (Tunnel Required)
 
-Use Next / Previous buttons to navigate
+1.  Install the app in your Shopify development store.
+2.  Open the app from **Shopify Admin → Apps**.
+3.  Create a test order in your store.
+4.  Shopify will send a `POST` request to your public webhook URL.
+5.  Visit the `/orders` page in your app's admin UI to confirm the new order is saved.
 
-📁 Project Structure
-pgsql
-Copy
-Edit
+> ⚠️ **Important:** Shopify cannot send webhooks to `localhost`. You **must** use a public tunnel like Cloudflare or Ngrok for live testing.
+
+---
+
+## 🧮 Viewing the Admin Table
+
+1.  In your Shopify Admin, go to **Apps → Orders Remix App**.
+2.  You will see the embedded UI displaying 5 orders per page.
+3.  Use the **Next** and **Previous** buttons to navigate through the pages.
+
+---
+
+## 📁 Project Structure
+
+Markdown
+
+# Orders Remix App
+
+This is a sample Shopify app built with Remix that displays the 5 most recent orders. It includes a webhook handler to receive new order data and an embedded admin UI to view the orders.
+
+---
+
+## ⚙️ Setup Instructions
+
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com//orders-remix-app.git](https://github.com//orders-remix-app.git)
+    cd orders-remix-app
+    ```
+
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Initialize the Database**
+    ```bash
+    npx prisma migrate dev --name init
+    ```
+    > 💡 **Optional:** Use `npx prisma studio` to visually inspect or edit the database.
+
+---
+
+## 🚀 Running the App (with Cloud Tunnel)
+
+Shopify CLI uses a random port each time—check your terminal output for the correct port number.
+
+1.  **Start the Development Server**
+    ```bash
+    npm run dev
+    ```
+    Watch for terminal output like this to get your port number:
+    ```
+    Local:   http://localhost:49201/
+    Preview: [https://your-store.myshopify.com/admin/apps/your-app](https://your-store.myshopify.com/admin/apps/your-app)
+    ```
+
+2.  **Expose Your App with Cloudflare Tunnel**
+    Replace `49201` with the actual port from the step above.
+    ```bash
+    npx cloudflared tunnel --url http://localhost:49201
+    ```
+
+3.  **Update `shopify.app.toml`**
+    Replace `your-tunnel-url` with the public URL provided by Cloudflare.
+    ```toml
+    application_url = "https://your-tunnel-url/"
+
+    [auth]
+    redirect_urls = [
+      "https://your-tunnel-url/api/auth"
+    ]
+
+    [webhooks]
+    api_version = "2025-07"
+
+    [[webhooks.subscriptions]]
+    topics = ["orders/create"]
+    uri = "/webhooks/orders_create"
+    ```
+
+---
+
+## 📦 Receiving and Testing Webhooks
+
+### A. Local Testing (Postman or `curl`)
+
+* **URL:** `http://localhost:<PORT>/webhooks/orders_create`
+* **Method:** `POST`
+* **Payload:**
+    ```json
+    {
+      "id": "9876543210",
+      "total_price": "123.45",
+      "created_at": "2024-07-01T14:30:00Z",
+      "customer": {
+        "first_name": "John",
+        "last_name": "Doe"
+      }
+    }
+    ```
+* **Expected Response:**
+    ```json
+    { "success": true }
+    ```
+
+### B. Live Shopify Order Testing (Tunnel Required)
+
+1.  Install the app in your Shopify development store.
+2.  Open the app from **Shopify Admin → Apps**.
+3.  Create a test order in your store.
+4.  Shopify will send a `POST` request to your public webhook URL.
+5.  Visit the `/orders` page in your app's admin UI to confirm the new order is saved.
+
+> ⚠️ **Important:** Shopify cannot send webhooks to `localhost`. You **must** use a public tunnel like Cloudflare or Ngrok for live testing.
+
+---
+
+## 🧮 Viewing the Admin Table
+
+1.  In your Shopify Admin, go to **Apps → Orders Remix App**.
+2.  You will see the embedded UI displaying 5 orders per page.
+3.  Use the **Next** and **Previous** buttons to navigate through the pages.
+
+---
+
+## 📁 Project Structure
+
 app/
-  routes/
-    webhooks.orders_create.jsx   # Webhook handler (POST)
-    orders.jsx                   # Admin UI with Polaris
-  db.server.js                   # Prisma client
-  shopify.server.js              # Shopify API/session config
-
+├── routes/
+│   ├── webhooks.orders_create.jsx  # Webhook handler (POST)
+│   └── orders.jsx                  # Admin UI with Polaris
+├── db.server.js                    # Prisma client instance
+└── shopify.server.js               # Shopify API/session config
 prisma/
-  schema.prisma                  # DB schema (Order, Session)
-
-shopify.app.toml                 # App config
+├── schema.prisma                   # Database schema (Order, Session)
+└── migrations/
+shopify.app.toml                    # App configuration
 package.json
-🛠️ Troubleshooting
-Always use the exact port/tunnel URL shown in terminal.
 
-If error: Cannot find module '~/db.server' → change to:
+## 🛠️ Troubleshooting
 
-js
-Copy
-Edit
-import prisma from "../db.server"
-Shopify webhooks must use public HTTPS tunnel (e.g., Cloudflare/Ngrok).
+* Always use the exact port and tunnel URL shown in your terminal.
+* If you see the error `Cannot find module '~/db.server'`, change the import path:
+    ```javascript
+    import prisma from "../db.server";
+    ```
+* Shopify webhooks require a public **HTTPS** tunnel (e.g., Cloudflare, Ngrok).
+* Ensure Polaris styles are imported in `app/root.jsx`:
+    ```javascript
+    import '@shopify/polaris/build/esm/styles.css';
+    ```
+* Wrap your application component in `<AppProvider>` within `app/root.jsx`.
 
-Polaris styles must be imported in app/root.jsx:
+---
 
-js
-Copy
-Edit
-import '@shopify/polaris/build/esm/styles.css';
-Wrap your app in AppProvider:
+## 📚 References
 
-js
-Copy
-Edit
-<AppProvider i18n={{}}>
-  {/* your app */}
-</AppProvider>
-📚 References
-Shopify Remix Webhooks Documentation
-
-Using Cloudflare/Ngrok with Shopify CLI
-
-Shopify Polaris UI
+* [Shopify Remix Webhooks Documentation](https://shopify.dev/docs/apps/tools/cli/webhooks)
+* [Using Cloudflare/Ngrok with Shopify CLI](https://shopify.dev/docs/apps/tools/cli/process#sharing-your-app)
+* [Shopify Polaris UI Components](https://polaris.shopify.com/)
